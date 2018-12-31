@@ -3,11 +3,19 @@ from tkinter import *
 import datetime
 from genPrintImg import ImageGen
 from toolData import Tool
+from genDatamatrix import Matrix
+import os
+
+# configs
+Printer = "HP Deskjet 6940 series"
+
+
+
 
 tool = Tool()
 window = Tk()
 window.title("Label Druck")
-window.geometry('350x200')
+window.geometry('200x180')
 
 # Set default Values, to be replaced with scanned params
 Customer = "Kunde"
@@ -70,15 +78,31 @@ def startPrint():
   # do printing and image generation here
   Image.blank() # clear or generate
   Image.WriteTo((5,130), tool.Customer)
-  Image.WriteTo((5,150), "Mat.-no.:  "+tool.MaterialNr)
-  Image.WriteTo((5,170), "Drw.-no.:  "+tool.DrawingNr)
-  # input qr code
-  Image.WriteTo((200,190), "MADE IN GERMANY")
-  Image.WriteTo((200,210), tool.KwDate+"   "+tool.FA)
-  Image.img.show()
+  Image.WriteTo((5,155), "Mat:")
+  Image.WriteTo((50,155), tool.MaterialNr, "arialbd.ttf",22)
+  Image.WriteTo((5,180), "Drw:")
+  Image.WriteTo((50,180), tool.DrawingNr, "arialbd.ttf",22)
+  Image.WriteTo((5,210), "MADE IN GERMANY", "arialbd.ttf")
+  if int(tool.Kw) <10:
+    Image.WriteTo((5,230), "CW: 0"+tool.KwDate+"   "+tool.FA, "arial.ttf",16)
+  else:
+    Image.WriteTo((5,230), "CW: "+tool.KwDate+"   "+tool.FA, "arial.ttf",16)
+
+  # generate and add datamatrix
+  matrix = Matrix()
+  matrix.create("$"+str(tool.Kw)+"$"+tool.FA+"$"+tool.MaterialNr+"$"+tool.DrawingNr)
+  matrix.merge(Image.get())
+  Image.img = Image.img.rotate(180)
+  Image.img.save('temp.jpg')
+  Image.img.save('temp.bmp')
+
+  # # Debug
+  # Image.img.show()
+  # Image.img.save('sample.jpg')
+
 
   for i in range(int(NrOfTools.get())):
-    print(i)
+    os.system('mspaint /pt temp.bmp "HP Deskjet 6940 series"')
 
 # print button
 btn = Button(window, text="Print", command=startPrint) 
