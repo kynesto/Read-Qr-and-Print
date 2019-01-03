@@ -2,15 +2,10 @@
 from tkinter import *
 import datetime
 from genPrintImg import ImageGen
+from PIL import ImageFilter
 from toolData import Tool
 from genDatamatrix import Matrix
 import os
-
-# configs
-Printer = "HP Deskjet 6940 series"
-
-
-
 
 tool = Tool()
 window = Tk()
@@ -63,7 +58,11 @@ e = Entry(window, width=5)
 e.grid(column=0, row=6)
 e.focus_set()
 
-def enter(event=None): 
+def enter(event=None):
+  # # Testing without scanner
+  # testString = "$FA0134253$5154482061$AB080331&3$ST016373 & Schweizer ESO$49186$Drw_1234$M1100037G$3$3$330$4,3$Mat_1234$SCHWEGLER BURSA$49186$"
+  # tool.put(testString.split("$"))
+  # Normal code with scanner
   tool.put(e.get().split("$"))
   e.delete(0, END)
 
@@ -77,23 +76,22 @@ def enter(event=None):
 def startPrint():
   # do printing and image generation here
   Image.blank() # clear or generate
-  Image.WriteTo((5,130), tool.Customer)
-  Image.WriteTo((5,155), "Mat:")
-  Image.WriteTo((50,155), tool.MaterialNr, "arialbd.ttf",22)
-  Image.WriteTo((5,180), "Drw:")
-  Image.WriteTo((50,180), tool.DrawingNr, "arialbd.ttf",22)
-  Image.WriteTo((5,210), "MADE IN GERMANY", "arialbd.ttf")
+  Image.WriteTo((10,256), tool.Customer, "cour.ttf", 40)
+  Image.WriteTo((10,306), "Mat:")
+  Image.WriteTo((100,300), tool.MaterialNr, "courbd.ttf",44)
+  Image.WriteTo((10,356), "Drw:")
+  Image.WriteTo((100,350), tool.DrawingNr, "courbd.ttf",44)
+  Image.WriteTo((10,406), "MADE IN GERMANY", "courbd.ttf")
   if int(tool.Kw) <10:
-    Image.WriteTo((5,230), "CW: 0"+tool.KwDate+"   "+tool.FA, "arial.ttf",16)
+    Image.WriteTo((10,446), "CW:0"+tool.KwDate+"  "+tool.FA, "cour.ttf",32)
   else:
-    Image.WriteTo((5,230), "CW: "+tool.KwDate+"   "+tool.FA, "arial.ttf",16)
+    Image.WriteTo((10,446), "CW:"+tool.KwDate+"   "+tool.FA, "cour.ttf",32)
 
   # generate and add datamatrix
   matrix = Matrix()
   matrix.create("$"+str(tool.Kw)+"$"+tool.FA+"$"+tool.MaterialNr+"$"+tool.DrawingNr)
-  matrix.merge(Image.get())
-  Image.img = Image.img.rotate(180)
-  Image.img.save('temp.jpg')
+  matrix.merge(Image.get(),240)
+  # Image.img = Image.img.rotate(180)
   Image.img.save('temp.bmp')
 
   # # Debug
@@ -102,7 +100,7 @@ def startPrint():
 
 
   for i in range(int(NrOfTools.get())):
-    os.system('mspaint /pt temp.bmp "HP Deskjet 6940 series"')
+    os.system('i_view32.exe temp.bmp /print')
 
 # print button
 btn = Button(window, text="Print", command=startPrint) 
