@@ -93,7 +93,7 @@ def startPrint():
   # generate and add datamatrix
   matrix = Matrix()
   matrix.create("$"+str(tool.Kw)+"$"+tool.FA+"$"+tool.MaterialNr+"$"+tool.DrawingNr)
-  matrix.merge(Image.get(),120)
+  matrix.merge(Image.get(),180)
   # Image.img = Image.img.rotate(180)
   Image.img.save('temp.bmp')
 
