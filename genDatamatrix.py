@@ -12,7 +12,7 @@ class Matrix():
 
         new_height = widthQr * DataMatrix.height / DataMatrix.width
         DataMatrix = DataMatrix.resize((widthQr, int(new_height)), Image.ANTIALIAS)
-        position = ((image.width - DataMatrix.width), (image.height - DataMatrix.height))
+        position = ((image.width-14 - DataMatrix.width), (image.height-14 - DataMatrix.height))
         image.paste(DataMatrix, position)
         # image.show()
         return image

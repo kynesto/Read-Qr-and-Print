@@ -7,7 +7,7 @@ class ImageGen():
     def blank(self):
         self.img = Image.new( 'RGB', (800,500), "white") # Create a new black image
 
-    def WriteTo(self, position, text, font="cour.ttf", size=38):
+    def WriteTo(self, position, text, size=44, font="courbd.ttf"):
         font = ImageFont.truetype(font, size)
         ImageDraw.Draw(self.img).text(
         position,  # Coordinates

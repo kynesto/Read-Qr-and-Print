@@ -60,7 +60,7 @@ e.focus_set()
 
 def enter(event=None):
   # # Testing without scanner
-  # testString = "$FA0134253$5154482061$AB080331&3$ST016373 & Schweizer ESO$49186$Drw_1234$M1100037G$3$3$330$4,3$Mat_1234$SCHWEGLER BURSA$49186$"
+  # testString = "$FA0133999$5042850180$AB080228/2$PS 49119204 - F58$RC_0019U001$_3$E1200042$200$3$330$8,3$6702.383.332$BOSCH NUERNBERG$39812$5"
   # tool.put(testString.split("$"))
   # Normal code with scanner
   tool.put(e.get().split("$"))
@@ -75,22 +75,25 @@ def enter(event=None):
 
 def startPrint():
   # do printing and image generation here
+  versatzy = 240
+  versatzx = 24
+  linesize = 50
   Image.blank() # clear or generate
-  Image.WriteTo((10,256), tool.Customer, "cour.ttf", 40)
-  Image.WriteTo((10,306), "Mat:")
-  Image.WriteTo((100,300), tool.MaterialNr, "courbd.ttf",44)
-  Image.WriteTo((10,356), "Drw:")
-  Image.WriteTo((100,350), tool.DrawingNr, "courbd.ttf",44)
-  Image.WriteTo((10,406), "MADE IN GERMANY", "courbd.ttf")
+  Image.WriteTo((versatzx,versatzy-7), tool.Customer)
+  Image.WriteTo((versatzx,versatzy+linesize), "Mat:")
+  Image.WriteTo((versatzx+100,versatzy+linesize), tool.MaterialNr)
+  Image.WriteTo((versatzx,versatzy+2*linesize), "Drw:")
+  Image.WriteTo((versatzx+100,versatzy+2*linesize), tool.DrawingNr)
+  Image.WriteTo((versatzx,versatzy+3*linesize+7), "MADE IN GERMANY")
   if int(tool.Kw) <10:
-    Image.WriteTo((10,446), "CW:0"+tool.KwDate+"  "+tool.FA, "cour.ttf",32)
+    Image.WriteTo((versatzx,versatzy+4*linesize), "CW:0"+tool.KwDate+"  "+tool.FA)
   else:
-    Image.WriteTo((10,446), "CW:"+tool.KwDate+"   "+tool.FA, "cour.ttf",32)
+    Image.WriteTo((versatzx,versatzy+4*linesize), "CW:"+tool.KwDate+"   "+tool.FA)
 
   # generate and add datamatrix
   matrix = Matrix()
   matrix.create("$"+str(tool.Kw)+"$"+tool.FA+"$"+tool.MaterialNr+"$"+tool.DrawingNr)
-  matrix.merge(Image.get(),240)
+  matrix.merge(Image.get(),120)
   # Image.img = Image.img.rotate(180)
   Image.img.save('temp.bmp')
 
